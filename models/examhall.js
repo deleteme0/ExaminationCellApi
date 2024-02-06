@@ -4,10 +4,11 @@ mongoose.set('strictQuery',false)
 
 
 const examhallSchema = new mongoose.Schema({
-    roomnumber: Number,
+    roomnumber: String,
     capacity: Number,
     bookedon: [{
         datensession: String,
+        used: Number,
         forexam: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Exam'

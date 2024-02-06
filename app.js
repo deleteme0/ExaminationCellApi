@@ -14,6 +14,6 @@ mongoose.connect(url).then(()=>{
 app.use(cors())
 app.use(express.json())
 app.use('/seat/',SeatR)
-app.use('/student/',ManageR);
+app.use('/manage/',ManageR);
 
 module.exports = app

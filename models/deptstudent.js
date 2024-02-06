@@ -5,6 +5,7 @@ mongoose.set('strictQuery',false)
 
 const deptstudentSchema = new mongoose.Schema({
     dept: String,
+    sem: Number,
     total: Number,
     rollnos: [Number]
   }
