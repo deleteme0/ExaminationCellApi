@@ -1,8 +1,8 @@
-const manageStudentRouter = require('express').Router()
+const manageRouter = require('express').Router()
 const DeptStudent = require("../models/deptstudent");
 //student/
 
-manageStudentRouter.get('/',async(req,res) =>{
+manageRouter.get('/student/',async(req,res) =>{
 
     const allStudents =  await DeptStudent.find({});
 
@@ -14,7 +14,7 @@ Add Student
 dept = string
 rollno = int
 */
-manageStudentRouter.post('/', async(req,res) => {
+manageRouter.post('/student/', async(req,res) => {
 
     const givendept = req.body.dept;
     const grollno = parseInt(req.body.rollno);
@@ -54,7 +54,7 @@ manageStudentRouter.post('/', async(req,res) => {
  * rollno = int
  */
 
-manageStudentRouter.delete('/',async(req,res)=>{
+manageRouter.delete('/student/',async(req,res)=>{
 
     var getDept = await DeptStudent.find({dept: req.body.dept})
     var ret = null;
@@ -78,4 +78,4 @@ manageStudentRouter.delete('/',async(req,res)=>{
 })
 
 
-module.exports =  manageStudentRouter
+module.exports =  manageRouter
