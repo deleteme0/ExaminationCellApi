@@ -6,14 +6,10 @@ mongoose.set('strictQuery',false)
 const examhallSchema = new mongoose.Schema({
     roomnumber: String,
     capacity: Number,
-    bookedon: [{
-        datensession: String,
-        used: Number,
-        forexam: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Exam'
-        }
-    }]
+    use: Boolean,
+    preset: [Number,[]],
+    benches: [
+    ]
   }
   )
 

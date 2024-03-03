@@ -3,6 +3,32 @@ const DeptStudent = require("../models/deptstudent");
 const Examhall = require("../models/examhall")
 const Exam = require("../models/exam")
 //student/
+manageRouter.get('/user/',async(req,res)=>{
+    const users = [
+        {
+            username:"abcd",
+            password:"123"
+        }
+    ]
+    return res.status(200).json(users).send()
+})
+
+manageRouter.post('/user/',async(req,res)=>{
+    const users = [
+        {
+            username:'abcd',
+            password:'123'
+        }
+    ]
+    console.log(users[0].username == req.body.username);
+
+    var crt = users.filter((each) =>{ return each.username == req.body.username && each.password == req.body.password})
+    console.log(crt);
+    if (crt.length >= 1){
+        return res.status(200).json({login:true}).send();
+    }
+    return res.status(200).json({login:false}).send();
+})
 
 manageRouter.get('/student/',async(req,res) =>{
 
@@ -14,37 +40,33 @@ manageRouter.get('/student/',async(req,res) =>{
 /*
 Add Student
 dept = string
-rollno = int
+rollno = string array
 sem = int
 */
 manageRouter.post('/student/', async(req,res) => {
 
     const givendept = req.body.dept;
-    const givensem = parseInt(req.body.sem);
-    const grollno = parseInt(req.body.rollno);
+    var givensem = req.body.sem;
+    const grollno = req.body.rollnos;
 
-    var getDept = await DeptStudent.find({dept: givendept,sem: givensem});
+    var getDept = await DeptStudent.find({dept: givendept});
     console.log(getDept.length);
     console.log(grollno);
     var rs = null;
     if (getDept.length < 1){
         const newdept = new DeptStudent({
             dept: givendept,
-            sem: givensem,
+            sem: 1,
             total: 1,
-            rollnos: [grollno]
+            use: false,
+            rollnos: grollno
         })
 
         var rs = await newdept.save();
     }else{
         getDept = getDept[0];
-        getDept.total += 1;
-
-        if (getDept.rollnos.includes(grollno)){
-            return res.status(200).json({"err":"Already present"}).send()
-        }
-
-        getDept.rollnos.push(grollno);
+        
+        getDept.rollnos = grollno;
 
         var rs = await getDept.save();
 
@@ -62,22 +84,15 @@ manageRouter.post('/student/', async(req,res) => {
 
 manageRouter.delete('/student/',async(req,res)=>{
 
-    var getDept = await DeptStudent.find({dept: req.body.dept, sem: req.body.sem})
+    var getDept = await DeptStudent.find({dept: req.body.dept})
     var ret = null;
     if (getDept.length < 1){
         return res.status(200).json({"err":"Invalid Dept"}).send();
     }else{
-        getDept = getDept[0]
-        const ind = getDept.rollnos.indexOf(parseInt(req.body.rollno));
+        //const ind = getDept.rollnos.indexOf(parseInt(req.body.rollno));
 
-        if(ind == -1){
-            return res.status(200).json({"err":"Rollno does not exist"}).send();
-        }
-        
-        getDept.total -= 1;
-        getDept.rollnos.splice(ind,1)
 
-        ret = await getDept.save();
+        ret = await DeptStudent.findOneAndDelete({dept: req.body.dept});
     }
 
     return res.status(200).json(ret).send();
@@ -90,6 +105,12 @@ manageRouter.delete('/student/',async(req,res)=>{
 
 manageRouter.get("/hall/", async(req,res)=>{
 
+    var gpreset = parseInt(req.body.preset);
+
+    if (gpreset == null){
+        gpreset = 0;
+    }
+
     const ret = await Examhall.find({});
 
     return res.status(200).json(ret).send();
@@ -98,7 +119,8 @@ manageRouter.get("/hall/", async(req,res)=>{
 /**
  * Add halls
  * roomno: string
- * capacity: int
+ * single: Integer
+ * doubel: Integer
  */
 manageRouter.post("/hall/", async(req,res)=>{
 
@@ -108,10 +130,21 @@ manageRouter.post("/hall/", async(req,res)=>{
         return res.status(400).json({"err":"Hall Already exists"}).send()
     }
 
+    var newbenches = [];
+
+    for(var i=0;i<parseInt(req.body.single); i++ ){
+        newbenches.push([{dept:"",rollno:"",selected:false}])
+    }
+    for(var i=0;i<parseInt(req.body.double);i++){
+        newbenches.push([{dept:"",rollno:"",selected:false},{dept:"",rollno:"",selected:false}])
+    }
+
     const newHall = new Examhall({
         roomnumber: req.body.roomno,
-        capacity: parseInt(req.body.capacity),
-        bookedon: null
+        capacity: 1,
+        preset: null,
+        use: false,
+        benches: newbenches
     })
 
     const ret = await newHall.save();
