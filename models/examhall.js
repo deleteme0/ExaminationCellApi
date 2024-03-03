@@ -4,9 +4,11 @@ mongoose.set('strictQuery',false)
 
 
 const examhallSchema = new mongoose.Schema({
-    roomnumber: String,
+    roomno: String,
     capacity: Number,
     use: Boolean,
+    single: Number,
+    double: Number,
     preset: [Number,[]],
     benches: [
     ]

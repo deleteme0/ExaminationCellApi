@@ -8,7 +8,7 @@ const deptstudentSchema = new mongoose.Schema({
     sem: Number,
     total: Number,
     use: Boolean,
-    rollnos: [Number]
+    rollnos: [String]
   }
   )
 
