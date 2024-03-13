@@ -2,6 +2,7 @@ const manageRouter = require('express').Router()
 const DeptStudent = require("../models/deptstudent");
 const Examhall = require("../models/examhall")
 const Exam = require("../models/exam")
+const Examhallnew = require("../models/examhallnew")
 //student/
 manageRouter.get('/user/',async(req,res)=>{
     const users = [
@@ -116,6 +117,19 @@ manageRouter.get("/hall/", async(req,res)=>{
     return res.status(200).json(ret);
 })
 
+manageRouter.get("/hallnew/", async(req,res)=>{
+
+    var gpreset = parseInt(req.body.preset);
+
+    if (gpreset == null){
+        gpreset = 0;
+    }
+
+    const ret = await Examhallnew.find({});
+
+    return res.status(200).json(ret);
+})
+
 /**
  * Add halls
  * roomno: string
@@ -145,6 +159,38 @@ manageRouter.post("/hall/", async(req,res)=>{
         preset: null,
         single: parseInt(req.body.single),
         double: parseInt(req.body.double),
+        use: false,
+        benches: newbenches
+    })
+
+    const ret = await newHall.save();
+
+    return res.status(200).json(ret).send()
+})
+
+manageRouter.post("/hallnew/", async(req,res)=>{
+
+    const checkHalls = await Examhallnew.find({roomno: req.body.roomno})
+
+    if (checkHalls.length > 0){
+        return res.status(400).json({"err":"Hall Already exists"}).send()
+    }
+
+    var cnt = 0;
+
+    req.body.benches.forEach((each)=>{
+        each.forEach((bench)=>{
+            if (bench.length > 0){
+                cnt += 1
+            }
+        })
+    })
+
+    var newbenches = req.body.benches
+
+    const newHall = new Examhallnew({
+        roomno: req.body.roomno,
+        capacity: cnt,
         use: false,
         benches: newbenches
     })
