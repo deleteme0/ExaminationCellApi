@@ -3,6 +3,18 @@ const DeptStudent = require("../models/deptstudent");
 const Examhall = require("../models/examhall")
 const Exam = require("../models/exam")
 const Examhallnew = require("../models/examhallnew")
+
+
+
+const max = (a,b) =>{
+
+    if (a>b){
+        return a;
+    }
+    return b;
+}
+
+
 //student/
 manageRouter.get('/user/',async(req,res)=>{
     const users = [
@@ -177,9 +189,13 @@ manageRouter.post("/hallnew/", async(req,res)=>{
     }
 
     var cnt = 0;
+    var col = 0;
+    var lims = 0;
 
     req.body.benches.forEach((each)=>{
+        col = max(col,each.length)
         each.forEach((bench)=>{
+            lims = max(lims,bench.length)
             if (bench.length > 0){
                 cnt += 1
             }
@@ -191,6 +207,9 @@ manageRouter.post("/hallnew/", async(req,res)=>{
     const newHall = new Examhallnew({
         roomno: req.body.roomno,
         capacity: cnt,
+        rows: newbenches.length,
+        cols: col,
+        lim:lim,
         use: false,
         benches: newbenches
     })

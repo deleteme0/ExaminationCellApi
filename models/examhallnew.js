@@ -7,6 +7,9 @@ const examhallnewSchema = new mongoose.Schema({
     roomno: String,
     use: Boolean,
     capacity: Number,
+    rows: Number,
+    cols: Number,
+    lim: Number,
     benches: [
     ]
   }
