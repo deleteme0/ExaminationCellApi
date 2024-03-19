@@ -185,7 +185,8 @@ manageRouter.post("/hallnew/", async(req,res)=>{
     const checkHalls = await Examhallnew.find({roomno: req.body.roomno})
 
     if (checkHalls.length > 0){
-        return res.status(400).json({"err":"Hall Already exists"}).send()
+        //return res.status(400).json({"err":"Hall Already exists"}).send()
+        const trash = await Examhallnew.findOneAndDelete({roomno: req.body.roomno})
     }
 
     var cnt = 0;
@@ -209,7 +210,7 @@ manageRouter.post("/hallnew/", async(req,res)=>{
         capacity: cnt,
         rows: newbenches.length,
         cols: col,
-        lim:lim,
+        lim:lims,
         use: false,
         benches: newbenches
     })
@@ -232,6 +233,18 @@ manageRouter.delete("/hall/", async(req,res)=>{
     }
 
     const ret = await Examhall.findOneAndDelete({roomno: req.body.roomno})
+
+    return res.status(200).json(ret).send();
+})
+manageRouter.delete("/hallnew/", async(req,res)=>{
+
+    const checkHalls = await Examhallnew.find({roomno: req.body.roomno})
+    console.log(req.body.roomno)
+    if (checkHalls.length == 0){
+        return res.status(400).json({"err":"Hall does not exist"}).send()
+    }
+
+    const ret = await Examhallnew.findOneAndDelete({roomno: req.body.roomno})
 
     return res.status(200).json(ret).send();
 })
