@@ -238,8 +238,8 @@ manageRouter.delete("/hall/", async(req,res)=>{
 })
 manageRouter.delete("/hallnew/", async(req,res)=>{
 
+    console.log(req.body)
     const checkHalls = await Examhallnew.find({roomno: req.body.roomno})
-    console.log(req.body.roomno)
     if (checkHalls.length == 0){
         return res.status(400).json({"err":"Hall does not exist"}).send()
     }
