@@ -62,6 +62,10 @@ manageRouter.post('/student/', async(req,res) => {
     var givensem = req.body.sem;
     const grollno = req.body.rollnos;
 
+    if (givensem){
+        givensem = 1
+    }
+
     var getDept = await DeptStudent.find({dept: givendept});
     console.log(getDept.length);
     console.log(grollno);
@@ -69,7 +73,7 @@ manageRouter.post('/student/', async(req,res) => {
     if (getDept.length < 1){
         const newdept = new DeptStudent({
             dept: givendept,
-            sem: 1,
+            sem: givensem,
             total: 1,
             use: false,
             rollnos: grollno
