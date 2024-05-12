@@ -196,8 +196,10 @@ manageRouter.post("/hallnew/", async(req,res)=>{
     var cnt = 0;
     var col = 0;
     var lims = 0;
+    
+    var newbenches = req.body.benches.slice
 
-    req.body.benches.forEach((each)=>{
+    newbenches.forEach((each)=>{
         col = max(col,each.length)
         each.forEach((bench)=>{
             lims = max(lims,bench.length)
@@ -207,7 +209,6 @@ manageRouter.post("/hallnew/", async(req,res)=>{
         })
     })
 
-    var newbenches = req.body.benches
 
     const newHall = new Examhallnew({
         roomno: req.body.roomno,
