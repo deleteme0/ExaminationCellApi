@@ -197,8 +197,7 @@ manageRouter.post("/hallnew/", async(req,res)=>{
     var col = 0;
     var lims = 0;
     
-    var newbenches = req.body.benches.slice
-
+    var newbenches = req.body.benches
     newbenches.forEach((each)=>{
         col = max(col,each.length)
         each.forEach((bench)=>{
